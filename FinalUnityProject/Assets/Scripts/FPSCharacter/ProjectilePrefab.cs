@@ -5,6 +5,7 @@ using UnityEngine;
 public class ProjectilePrefab : MonoBehaviour, IPooledObject
 {
     public float Speed = 1f;
+    public float Damage = 25f;
     private Vector3 mDirection;
 
     void Update()
@@ -14,7 +15,7 @@ public class ProjectilePrefab : MonoBehaviour, IPooledObject
 
     private void OnTriggerEnter(Collider other)
     {
-        Message m = new DamageMessage(transform, other.transform, typeof(DamageMessage), 5.0f);
+        Message m = new DamageMessage(transform, other.transform, typeof(Damageable), Damage);
         MessageManager.GetInstance().SendMessage(m);
     }
 

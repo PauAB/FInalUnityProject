@@ -29,11 +29,13 @@ public class CharacterMove : MonoBehaviour, IEntity, FloorMessage
 
     void IEntity.EAwake()
     {
-
+        
     }
 
     void IEntity.EUpdate(float delta)
     {
+        if (Spatial == null) Spatial = FindObjectOfType<SpatialIndex>();
+
         mIsGrounded = Physics.CheckSphere(GroundCheck.position, GroundDistance, GroundMask);
 
         if (mIsGrounded && mVelocity.y < 0)
@@ -57,11 +59,6 @@ public class CharacterMove : MonoBehaviour, IEntity, FloorMessage
             mVelocity += Physics.gravity * Time.deltaTime;
             Controller.Move(mVelocity * Time.deltaTime);
         }
-    }
-
-    private IEnumerator BurnCo(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
     }
 
     public void GetFloorInfo(SpatialIndex.FLOOR_STATUS state)

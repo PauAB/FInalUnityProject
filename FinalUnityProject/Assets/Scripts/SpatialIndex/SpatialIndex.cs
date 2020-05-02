@@ -11,7 +11,6 @@ public interface FloorMessage : IEventSystemHandler
 
 public class SpatialIndex : MonoBehaviour
 {
-    
     public enum FLOOR_STATUS
     {
         DEFAULT = 1<<0,
@@ -31,6 +30,10 @@ public class SpatialIndex : MonoBehaviour
     private BoxCollider mCollider;
     private FLOOR_STATUS[] mFloor;
     private Vector3 mCenter;
+
+    private GameObject mGrass;
+    private GameObject mWater;
+    private GameObject mLava;
 
     void Start()
     {
@@ -102,6 +105,12 @@ public class SpatialIndex : MonoBehaviour
                     1 << 4))
                 {
                     mFloor[NumCubesX * i + j] = FLOOR_STATUS.WATER;
+                    mWater = ObjectPooler.Instance.Trigger("Water",
+                        mCenter
+                    + transform.rotation * Vector3.right * CubeSize * i
+                    + transform.rotation * Vector3.forward * j,
+                        transform.rotation
+                        );
                 }
                 else if (Physics.CheckBox(mCenter
                     + transform.rotation * Vector3.right * CubeSize * i
@@ -111,8 +120,23 @@ public class SpatialIndex : MonoBehaviour
                     1 << 9))
                 {
                     mFloor[NumCubesX * i + j] = FLOOR_STATUS.LAVA;
+                    mLava = ObjectPooler.Instance.Trigger("Lava",
+                        mCenter
+                    + transform.rotation * Vector3.right * CubeSize * i
+                    + transform.rotation * Vector3.forward * j,
+                        transform.rotation
+                        );
                 }
-                else mFloor[NumCubesX * i + j] = FLOOR_STATUS.GRASS;
+                else
+                {
+                    mFloor[NumCubesX * i + j] = FLOOR_STATUS.GRASS;
+                    mGrass = ObjectPooler.Instance.Trigger("Grass",
+                        mCenter
+                    + transform.rotation * Vector3.right * CubeSize * i
+                    + transform.rotation * Vector3.forward * j,
+                        transform.rotation
+                        );
+                }
             }
         }
 
@@ -143,5 +167,10 @@ public class SpatialIndex : MonoBehaviour
         mFloor[NumCubesX * mapX + mapY] |= FLOOR_STATUS.PLAYER;
 
         ExecuteEvents.Execute<FloorMessage>(target, null, (a, b) => a.GetFloorInfo(mFloor[NumCubesX * mapX + mapY]));
+    }
+
+    private void InstantiateFloor(int index)
+    {
+
     }
 }

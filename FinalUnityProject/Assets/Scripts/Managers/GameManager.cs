@@ -20,6 +20,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     List<IEntity> Entities;
 
+    [SerializeField]
+    GameObject Character;
+
+    public GameObject SpawnPos;
+
     void Awake()
     {
         StackFrame callStack = new StackFrame(1, true);
@@ -55,6 +60,30 @@ public class GameManager : MonoBehaviour
         {
             if ((ent as MonoBehaviour).enabled)
                 ent.EUpdate(Time.deltaTime);
+        }
+    }
+
+    public void InstantiateCharacter()
+    {
+        GameObject character = Instantiate(Character);
+        character.transform.position = SpawnPos.transform.position;
+
+        FindNewEntities();
+    }
+
+    public void ActivateCharacter()
+    {
+        Character.SetActive(true);
+
+        FindNewEntities();
+    }
+
+    private void FindNewEntities()
+    {
+        var entities = FindObjectsOfType<MonoBehaviour>().OfType<IEntity>();
+        foreach (IEntity ent in entities)
+        {
+            Entities.Add(ent);
         }
     }
 }

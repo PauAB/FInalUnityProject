@@ -43,13 +43,43 @@ public class DamageMessage : Message
         SenderComp = sendComp;
         Damage = damage;
 
-        if (receiver.GetComponent(sendComp) == null)
-        {
-            Debug.Log("Null");
-            return false;
-        }
+        if (receiver.GetComponent(sendComp) == null) return false;
+        
         MessageManager.GetInstance().SendMessage(this);
+        return true;
+    }
+}
 
+public class GameMessage : Message
+{
+    public bool Next;
+
+    public GameMessage() { }
+    public GameMessage(Transform send, Transform receiver, System.Type senderComp, bool next)
+    {
+        Sender = send;
+        Receiver = receiver;
+        SenderComp = senderComp;
+        Next = next;
+        MessageType = "Game";
+    }
+
+    public override Message CreateCopy()
+    {
+        Message m = new GameMessage(Receiver, Sender, SenderComp, Next);
+        return m;
+    }
+
+    public bool SetAndSendMessage(Transform send, Transform receiver, System.Type sendComp, bool next)
+    {
+        Sender = send;
+        Receiver = receiver;
+        SenderComp = sendComp;
+        Next = next;
+
+        if (receiver.GetComponent(sendComp) == null) return false;
+
+        MessageManager.GetInstance().SendMessage(this);
         return true;
     }
 }

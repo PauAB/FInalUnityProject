@@ -20,3 +20,5 @@ MonoBehaviour:
   ProjectileType: {fileID: 0}
   Abilities:
   - {fileID: 5869728173499989421, guid: e1ce0c446af84a140abc276b2ffffe46, type: 3}
+  - {fileID: 5869728173499989421, guid: e1ce0c446af84a140abc276b2ffffe46, type: 3}
+  - {fileID: 5869728173499989421, guid: e1ce0c446af84a140abc276b2ffffe46, type: 3}

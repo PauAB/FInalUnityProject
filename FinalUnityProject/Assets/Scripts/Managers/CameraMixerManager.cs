@@ -8,26 +8,46 @@ public class CameraMixerManager : MonoBehaviour
     [SerializeField]
     Camera[] Cameras;
 
+    public float TimeBetweenBlend;
+
     private CameraMixer mMixer;
+    private Coroutine mBlendCamerasCo;
 
     void Start()
     {
         mMixer = GetComponent<CameraMixer>();
+
+        if (mBlendCamerasCo != null) StopCoroutine(mBlendCamerasCo);
+        mBlendCamerasCo = StartCoroutine(BlendCamerasCo(TimeBetweenBlend));
     }
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.A))
+        
+    }
+
+    private IEnumerator BlendCamerasCo(float waitTime)
+    {
+        mMixer.BlendCamera(Cameras[1], 10.0f, Interpolators.QuadIn);
+        yield return new WaitForSeconds(waitTime);
+        
+        mMixer.BlendCamera(Cameras[2], 5.0f, Interpolators.QuadIn);
+        yield return new WaitForSeconds(waitTime);
+        
+        mMixer.BlendCamera(Cameras[3], 5.0f, Interpolators.QuadIn);
+        yield return new WaitForSeconds(waitTime);
+
+        mMixer.BlendCamera(Cameras[4], 5.0f, Interpolators.QuadIn);
+        yield return new WaitForSeconds(waitTime);
+
+        yield return new WaitForSeconds(2f);
+
+        Message m = new GameMessage(transform, GameManager.instance.transform, typeof(GameMessageReceiver), true);
+        MessageManager.GetInstance().SendMessage(m);
+
+        foreach (Camera cam in Cameras)
         {
-            mMixer.BlendCamera(Cameras[0], 10.0f, Interpolators.BounceInOut);
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            mMixer.BlendCamera(Cameras[1], 5.0f, Interpolators.CircularIn);
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            mMixer.BlendCamera(Cameras[2], 3.0f, Interpolators.ExpoIn);
+            cam.gameObject.SetActive(false);
         }
     }
 }
